@@ -12,7 +12,8 @@ router.use('/api/v1', userRoutes);
 router.use('/api/v1', threadRoutes);
 router.use('/api/v1', forumRoutes);
 router.use('/api/v1', commentRoutes);
-router.use('/auth', authRoutes);
+// Auth routes (mounted to match frontend expectations: /api/auth)
+router.use('/api/auth', authRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

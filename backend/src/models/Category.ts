@@ -8,17 +8,17 @@ export class Category extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  category_id!: number;
+  declare category_id: number;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  name!: string;
+  declare name: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description?: string;
+  declare description?: string;
 }

@@ -10,28 +10,28 @@ export class Forum extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  forum_id!: number;
+  declare forum_id: number;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  title!: string;
+  declare title: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description?: string;
+  declare description?: string;
 
   @ForeignKey(() => Category)
   @Column(DataType.INTEGER)
-  category_id?: number;
+  declare category_id?: number;
 
   // Associations
   @BelongsTo(() => Category)
-  category!: Category;
+  declare category: Category;
 
   @HasMany(() => Thread)
-  threads!: Thread[];
+  declare threads: Thread[];
 }

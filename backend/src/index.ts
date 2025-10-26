@@ -2,10 +2,11 @@ import 'reflect-metadata';
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import { connectDatabase } from './config/database';
+import { ensureDefaultRoles } from './services/user';
 import routes from './routes';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 // Middleware
 app.use(cors());
@@ -37,6 +38,9 @@ const startServer = async () => {
   try {
     // Connect to database and sync models
     await connectDatabase();
+    
+    // Ensure default roles exist
+    await ensureDefaultRoles();
     
     // Start server
     app.listen(PORT, () => {

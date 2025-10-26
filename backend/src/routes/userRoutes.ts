@@ -10,11 +10,12 @@ router.get('/users/id/:id', userController.getUserById);
 router.get('/users/nickname/:nickname', userController.getUserByNickname);
 
 // Protected routes (require authentication)
+router.get('/me', authenticateJWT, userController.getCurrentUser);
 router.put('/users/:id', authenticateJWT, userController.updateUser);
 router.delete('/users/:id', authenticateJWT, userController.deleteUser);
 
-// Test route to verify token
-router.get('/me', authenticateJWT, (req, res) => {
+// Legacy test route - can be removed
+router.get('/test-me', authenticateJWT, (req, res) => {
   res.json({
     message: 'Authenticated user info',
     user: req.user,

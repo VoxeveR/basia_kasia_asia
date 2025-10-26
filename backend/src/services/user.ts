@@ -3,9 +3,10 @@ import { Role } from '../models/Role';
 
 export interface UserResponse {
   user_id: number;
-  nickname: string;
+  username: string;
   email: string;
-  bio?: string | null;
+  date_of_birth?: Date | null;
+  gender?: string | null;
   role_id?: number | null;
   created_at?: string;
   updated_at?: string;
@@ -14,6 +15,41 @@ export interface UserResponse {
     name: string;
   };
 }
+
+/**
+ * Ensure default roles exist in the database
+ */
+export const ensureDefaultRoles = async (): Promise<void> => {
+  try {
+    // Check if any roles exist
+    const roleCount = await Role.count();
+    
+    if (roleCount === 0) {
+      // Create default roles
+      await Role.bulkCreate([
+        { name: 'user' },
+        { name: 'moderator' },
+        { name: 'admin' }
+      ]);
+      console.log('Default roles created');
+    }
+  } catch (error) {
+    console.error('Error ensuring default roles:', error);
+  }
+};
+
+/**
+ * Get default user role ID
+ */
+export const getDefaultUserRoleId = async (): Promise<number | null> => {
+  try {
+    const userRole = await Role.findOne({ where: { name: 'user' } });
+    return userRole ? userRole.role_id : null;
+  } catch (error) {
+    console.error('Error getting default user role:', error);
+    return null;
+  }
+};
 
 /**
  * Get a user by their numeric ID.
@@ -121,14 +157,37 @@ export const getAllUsers = async (
  * @returns Promise resolving to created User
  */
 export const createUser = async (userData: {
-  nickname: string;
+  username: string;
   email: string;
   password_hash: string;
-  bio?: string;
+  date_of_birth: Date | undefined;
+  gender: string;
   role_id?: number;
 }): Promise<UserResponse> => {
   try {
-    const user = await User.create(userData);
+    // Ensure default roles exist
+    await ensureDefaultRoles();
+    
+    // Validate role_id if provided
+    let validatedRoleId: number | undefined = userData.role_id;
+    if (userData.role_id) {
+      const roleExists = await Role.findByPk(userData.role_id);
+      if (!roleExists) {
+        console.warn(`Role ID ${userData.role_id} does not exist, using default user role`);
+        const defaultRoleId = await getDefaultUserRoleId();
+        validatedRoleId = defaultRoleId || undefined;
+      }
+    } else {
+      // If no role_id provided, use default user role
+      const defaultRoleId = await getDefaultUserRoleId();
+      validatedRoleId = defaultRoleId || undefined;
+    }
+    
+    const user = await User.create({
+      ...userData,
+      role_id: validatedRoleId
+    });
+    
     const userResponse = await getUserById(user.user_id, true);
     
     if (!userResponse) {
