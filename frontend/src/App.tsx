@@ -4,7 +4,7 @@ import LoginPage from '@/pages/LoginPage'
 import AboutPage from '@/pages/AboutPage'
 import ForumPage from '@/pages/ForumPage'
 import ProfilePage from '@/pages/ProfilePage'
-import './App.css'
+
 
 function App() {
   return (
