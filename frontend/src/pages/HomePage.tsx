@@ -15,17 +15,17 @@ function HomePage() {
                         <Cards 
                             imageSrc="/src/assets/img/Basia.jpg"
                             title="Basia"
-                            description="Współzałożycielka i główna wizjonerka platformy. Odpowiada za strategię rozwoju i budowanie społeczności."
+                            description="Co-founder and main visionary of the platform. Responsible for development strategy and building the community."
                         />
                         <Cards 
                             imageSrc="/src/assets/img/Kasia.jpg"
                             title="Kasia"
-                            description="Ekspertka od technologii i rozwoju produktu. Dba o to, żeby platforma działała bezproblemowo."
+                            description="Technology and product development expert. Ensures the platform runs smoothly and efficiently."
                         />
                         <Cards 
                             imageSrc="/src/assets/img/Asia.jpg"
                             title="Asia"
-                            description="Specjalistka od komunikacji i marketingu. Tworzy mosty między społecznością a platformą."
+                            description="Communication and marketing specialist. Creates bridges between the community and the platform."
                         />
                     </div>
                 </div>
