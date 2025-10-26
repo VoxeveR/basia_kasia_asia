@@ -4,17 +4,10 @@ import LoginPage from '@/pages/LoginPage'
 import AboutPage from '@/pages/AboutPage'
 import ForumPage from '@/pages/ForumPage'
 import ProfilePage from '@/pages/ProfilePage'
-import './App.css'
-import  Menu  from './components/Menu'
+
 
 function App() {
   return (
-<<<<<<< HEAD
-      <Menu /> 
-      
-      
-    
-=======
     <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -26,7 +19,6 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     </BrowserRouter>
->>>>>>> main
   )
 }
 
