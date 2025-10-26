@@ -1,11 +1,17 @@
 import { Router } from 'express';
 import userRoutes from './userRoutes';
+import threadRoutes from './threadRoutes';
+import forumRoutes from './forumRoutes';
+import commentRoutes from './commentRoutes';
 import authRoutes from './authRoutes';
 
 const router = Router();
 
 // API routes
 router.use('/api/v1', userRoutes);
+router.use('/api/v1', threadRoutes);
+router.use('/api/v1', forumRoutes);
+router.use('/api/v1', commentRoutes);
 router.use('/auth', authRoutes);
 
 // Health check

@@ -14,7 +14,7 @@ import Logo from "../assets/img/Logo-full.svg"
 
 function Menu() {
     return (
-    <div className="inline-flex items-center justify-between w-full">
+    <div className="inline-flex items-center justify-between w-full border-b border-black border-solid">
         <div>
             <img src={Logo} alt="Logo" className="h-20 m-2" />
         </div>

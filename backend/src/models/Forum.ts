@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Category } from './Category';
+import { Thread } from './Thread';
 
 @Table({
   tableName: 'forums',
@@ -30,4 +31,7 @@ export class Forum extends Model {
   // Associations
   @BelongsTo(() => Category)
   category!: Category;
+
+  @HasMany(() => Thread)
+  threads!: Thread[];
 }
