@@ -18,7 +18,7 @@ function Cards({ imageSrc, title, description, footerText }: CardProps) {
     return (
         <Card className="w-80">
             <CardHeader>
-                <img src={imageSrc} alt={title} className="w-full h-48 object-cover rounded-md" />
+                <img src={imageSrc} alt={title} className="w-full h-full object-cover rounded-md" />
                 <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent>

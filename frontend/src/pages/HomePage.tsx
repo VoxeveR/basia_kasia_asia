@@ -1,5 +1,6 @@
 import  Menu  from '@/components/Menu'
 import Cards from '@/components/Card';
+import Footer from '@/components/Foooter';
 
 function HomePage() {
     return (
@@ -12,23 +13,24 @@ function HomePage() {
                     <p className="text-2xl font-semibold mb-4">Our Founders</p>
                     <div className="flex gap-6 flex-wrap">
                         <Cards 
-                            imageSrc="/src/assets/img/default-user.svg"
+                            imageSrc="/src/assets/img/Basia.jpg"
                             title="Basia"
                             description="Współzałożycielka i główna wizjonerka platformy. Odpowiada za strategię rozwoju i budowanie społeczności."
                         />
                         <Cards 
-                            imageSrc="/src/assets/img/default-user.svg"
+                            imageSrc="/src/assets/img/Kasia.jpg"
                             title="Kasia"
                             description="Ekspertka od technologii i rozwoju produktu. Dba o to, żeby platforma działała bezproblemowo."
                         />
                         <Cards 
-                            imageSrc="/src/assets/img/default-user.svg"
+                            imageSrc="/src/assets/img/Asia.jpg"
                             title="Asia"
                             description="Specjalistka od komunikacji i marketingu. Tworzy mosty między społecznością a platformą."
                         />
                     </div>
                 </div>
             </div>
+            <Footer  />
         </div>
     )
 }
