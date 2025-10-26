@@ -37,6 +37,11 @@ function Menu() {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild className="text-xl">
+                        <Link to="/about">About Us</Link>
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <NavigationMenuLink asChild className="text-xl">
                         <Link to="/login">Login</Link>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
