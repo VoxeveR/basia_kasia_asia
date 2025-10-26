@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import userRoutes from './userRoutes';
 import threadRoutes from './threadRoutes';
+import forumRoutes from './forumRoutes';
 import authRoutes from './authRoutes';
 
 const router = Router();
@@ -8,6 +9,7 @@ const router = Router();
 // API routes
 router.use('/api/v1', userRoutes);
 router.use('/api/v1', threadRoutes);
+router.use('/api/v1', forumRoutes);
 router.use('/auth', authRoutes);
 
 // Health check
