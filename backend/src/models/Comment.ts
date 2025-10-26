@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Thread } from './Thread';
 import { User } from './User';
 
@@ -26,9 +26,9 @@ export class Comment extends Model {
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true,
+    allowNull: false,
   })
-  content?: string;
+  content!: string;
 
   // Associations
   @BelongsTo(() => Thread)
@@ -37,6 +37,9 @@ export class Comment extends Model {
   @BelongsTo(() => User)
   user!: User;
 
-  @BelongsTo(() => Comment)
+  @BelongsTo(() => Comment, { foreignKey: 'parent_comment_id' })
   parentComment!: Comment;
+
+  @HasMany(() => Comment, { foreignKey: 'parent_comment_id' })
+  replies!: Comment[];
 }
