@@ -4,10 +4,6 @@ import { authenticateJWT, optionalAuthentication } from '../middleware/auth';
 
 const router = Router();
 
-// Public routes
-router.post('/register', userController.createUser);
-router.post('/login', userController.loginUser);
-
 // Public user info routes (no auth required to view profiles)
 router.get('/users', userController.getAllUsers);
 router.get('/users/id/:id', userController.getUserById);
