@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import userRoutes from './userRoutes';
+import authRoutes from './authRoutes';
 
 const router = Router();
 
 // API routes
-router.use('/api', userRoutes);
+router.use('/api/v1', userRoutes);
+router.use('/auth', authRoutes);
 
 // Health check
 router.get('/health', (req, res) => {
