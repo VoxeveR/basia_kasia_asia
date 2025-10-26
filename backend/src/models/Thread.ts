@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Forum } from './Forum';
 import { User } from './User';
+import { Comment } from './Comment';
 
 @Table({
   tableName: 'threads',
@@ -38,4 +39,7 @@ export class Thread extends Model {
 
   @BelongsTo(() => User)
   user!: User;
+
+  @HasMany(() => Comment)
+  comments!: Comment[];
 }
