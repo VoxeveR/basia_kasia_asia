@@ -4,9 +4,9 @@ import Menu from "@/components/Menu";
 
 function AboutPage() {
     return (
-        <div className='w-full h-full flex flex-col gap-4 p-4'> 
+        <div className='w-full min-h-screen flex flex-col gap-4 p-4 bg-gray-50'> 
             <Menu />
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col flex-1 items-center">
                 <img src="/src/assets/img/about_us_banner.jpg" alt="About Us Banner" className="w-full max-w-4xl mb-8 rounded-lg shadow-lg" />
                 
                 <div className="max-w-4xl p-8 rounded-lg shadow-lg mb-8">

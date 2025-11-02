@@ -77,9 +77,9 @@ function LoginPage() {
     }
 
     return (
-        <div className='w-full h-full flex flex-col gap-4 p-4'>
+        <div className='w-full min-h-screen flex flex-col gap-4 p-4 bg-gray-50'>
             <Menu />
-            <div className="bg-[url(/src/assets/img/background.svg)] p-4">
+            <div className="bg-[url(/src/assets/img/background.svg)] p-4 flex-1">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-3/10 justify-center bg-white/80 mx-auto p-4 rounded-lg">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="signIn">Sign In</TabsTrigger>
