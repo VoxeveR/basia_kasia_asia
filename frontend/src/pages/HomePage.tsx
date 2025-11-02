@@ -4,9 +4,9 @@ import Footer from '@/components/Foooter';
 
 function HomePage() {
     return (
-        <div className='w-full h-full flex flex-col gap-4 p-4'> 
+        <div className='w-full min-h-screen flex flex-col gap-4 p-4 bg-gray-50'> 
             <Menu />
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col flex-1 items-center">
                 <div className="w-full max-w-fit">
                     <p className='text-4xl font-bold'>Your Voice! Your Space!</p>
                     <p className='text-4xl font-bold mb-8'>Your Community!</p>
