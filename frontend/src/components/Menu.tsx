@@ -1,12 +1,8 @@
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-//   NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-//   NavigationMenuViewport,
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import { Link } from "react-router";
 import Logo from "../assets/img/Logo-full.svg"
