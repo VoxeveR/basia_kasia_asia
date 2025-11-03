@@ -48,10 +48,9 @@ function LoginPage() {
             await register(data.email, data.password, data.name, data.date, data.gender);
             
             // Success - switch to sign in tab
-            toast.success("Registration successful! Please sign in.", { id, duration: 2000 });
+            toast.success("Registration successful! Please sign in.", { id, duration: 1000 });
             setActiveTab("signIn");
             
-            // Pre-populate email in login form for convenience
             setEmailLogin(data.email);
             
         } catch (error) {

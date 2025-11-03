@@ -40,6 +40,45 @@ export const ensureDefaultRoles = async (): Promise<void> => {
 };
 
 /**
+ * Ensure default admin user exists in the database
+ */
+export const ensureDefaultAdmin = async (): Promise<void> => {
+  try {
+    // Check if any admin users exist
+    const adminRole = await Role.findOne({ where: { name: 'admin' } });
+    
+    if (!adminRole) {
+      logger.error('Admin role not found. Please ensure roles are created first.');
+      return;
+    }
+    
+    const adminCount = await User.count({ where: { role_id: adminRole.role_id } });
+    
+    if (adminCount === 0) {
+      // Create default admin user
+      const bcrypt = require('bcrypt');
+      const defaultAdminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'admin123';
+      const hashedPassword = await bcrypt.hash(defaultAdminPassword, 10);
+      
+      await User.create({
+        username: 'admin',
+        email: 'admin@example.com',
+        password_hash: hashedPassword,
+        role_id: adminRole.role_id,
+        gender: 'non-binary',
+        date_of_birth: new Date('1990-01-01')
+      });
+      
+      logger.info('Default admin user created');
+      logger.info('Admin credentials - Email: admin@example.com, Password: ' + defaultAdminPassword);
+      logger.warn('⚠️  Please change the default admin password after first login!');
+    }
+  } catch (error) {
+    logger.error('Error ensuring default admin:', error);
+  }
+};
+
+/**
  * Get default user role ID
  */
 export const getDefaultUserRoleId = async (): Promise<number | null> => {
@@ -117,7 +156,13 @@ export const getUserByEmail = async (
       attributes: includePasswordHash 
         ? undefined 
         : { exclude: ['password_hash'] },
-      include: [{ model: Role, as: 'role' }],
+      include: [
+        { 
+          model: Role, 
+          as: 'role',
+          attributes: ['role_id', 'name']
+        }
+      ],
     });
     
     if (!user) return null;

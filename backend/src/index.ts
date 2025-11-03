@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import express, { Request, Response } from "express";
 import cors from 'cors';
 import { connectDatabase } from './config/database';
-import { ensureDefaultRoles } from './services/user';
+import { ensureDefaultRoles, ensureDefaultAdmin } from './services/user';
 import routes from './routes';
 import logger from './config/logger';
 import { morganMiddleware } from './middleware/logger';
@@ -53,6 +53,11 @@ const startServer = async () => {
     logger.info('Ensuring default roles exist...');
     await ensureDefaultRoles();
     logger.info('Default roles verified');
+    
+    // Ensure default admin exists
+    logger.info('Ensuring default admin exists...');
+    await ensureDefaultAdmin();
+    logger.info('Default admin verified');
     
     // Start server
     app.listen(PORT, () => {

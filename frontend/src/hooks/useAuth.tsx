@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
       setExpiresIn(data.access_token_expires_in);
       setRefreshTokenExpiresIn(data.refresh_token_expires_in);
       setIsAuthenticated(true)
+      console.log("Login successful, received data:", role);
       if (data.role === "admin") {
         navigate("/admin");
         return;

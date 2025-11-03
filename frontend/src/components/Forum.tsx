@@ -17,7 +17,7 @@ const forumTopics = [
 function Forum(){
     return (
         <div>
-            <Table className="w-9/10 bg-white/98 mx-auto">
+            <Table className="w-9/10 mx-auto">
                 <TableHeader>
                     <TableRow>
                         <TableHead>Title</TableHead>

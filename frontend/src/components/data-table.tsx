@@ -21,6 +21,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { RegisterCard } from "@/components/registerCard";
 import { toast } from "sonner";
+import { register } from "../services/auth";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -50,7 +51,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const handleRegisterAdmin = (data: {
+  const handleRegisterAdmin = async (data: {
     name: string;
     email: string;
     password: string;
@@ -58,6 +59,7 @@ export function DataTable<TData, TValue>({
     gender: string;
     date: Date | undefined;
   }) => {
+    try {
     if (!data.email || !data.password) {
       toast.warning("Email and password are required");
       return;
@@ -68,15 +70,15 @@ export function DataTable<TData, TValue>({
       return;
     }
 
-    // Registration logic for new admin goes here
-    console.log("Registering new admin:", data);
+    await register(data.email, data.password, data.name, data.date, data.gender, 3);
     toast.success("Admin registered successfully!");
-    
-    // In a real app, you would call an API here to register the admin
+    } catch (error) {
+      toast.error(`Registration error: ${error}`);
+    }
   }
 
   return (
-    <div className="overflow-hidden rounded-md border px-2">
+    <div className="rounded-md border px-2 bg-white">
       <div className="flex items-center py-4 px-2">
         <Input
           placeholder="Filter emails..."
@@ -107,7 +109,7 @@ export function DataTable<TData, TValue>({
           </DialogContent>
         </Dialog>
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

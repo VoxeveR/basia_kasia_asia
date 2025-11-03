@@ -14,14 +14,14 @@ export async function login(email: string, password: string) {
   }
 }
 
-export async function register(email: string, password: string, username: string, date_of_birth: Date | undefined, gender: string) {
+export async function register(email: string, password: string, username: string, date_of_birth: Date | undefined, gender: string, role_id: number = 1) {
   const response = await axios.post("http://localhost:8000/api/auth/register", {
     "username": username,
     "email": email,
     "password": password,
     "date_of_birth": date_of_birth,
     "gender": gender,
-    "role_id": 1,
+    "role_id": role_id,
   });
   return response.data;
 }

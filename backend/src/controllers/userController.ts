@@ -263,7 +263,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const refreshTokenExpiresIn = 60 * 60 * 24 * 7; // 7 days in seconds
 
     res.json({
-      role: user.role,
+      role: user.role.name,
       access_token: accessToken,
       access_token_type: 'Bearer',
       refresh_token: refreshToken,
