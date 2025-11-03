@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Thread } from './Thread';
 import { User } from './User';
 
@@ -10,33 +10,36 @@ export class Comment extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  comment_id!: number;
+  declare comment_id: number;
 
   @ForeignKey(() => Thread)
   @Column(DataType.INTEGER)
-  thread_id?: number;
+  declare thread_id?: number;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  user_id?: number;
+  declare user_id?: number;
 
   @ForeignKey(() => Comment)
   @Column(DataType.INTEGER)
-  parent_comment_id?: number;
+  declare parent_comment_id?: number;
 
   @Column({
     type: DataType.TEXT,
-    allowNull: true,
+    allowNull: false,
   })
-  content?: string;
+  declare content: string;
 
   // Associations
   @BelongsTo(() => Thread)
-  thread!: Thread;
+  declare thread: Thread;
 
   @BelongsTo(() => User)
-  user!: User;
+  declare user: User;
 
-  @BelongsTo(() => Comment)
-  parentComment!: Comment;
+  @BelongsTo(() => Comment, { foreignKey: 'parent_comment_id' })
+  declare parentComment: Comment;
+
+  @HasMany(() => Comment, { foreignKey: 'parent_comment_id' })
+  declare replies: Comment[];
 }

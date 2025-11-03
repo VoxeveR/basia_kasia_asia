@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
 import { Category } from './Category';
+import { Thread } from './Thread';
 
 @Table({
   tableName: 'forums',
@@ -9,25 +10,28 @@ export class Forum extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  forum_id!: number;
+  declare forum_id: number;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  title!: string;
+  declare title: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
-  description?: string;
+  declare description?: string;
 
   @ForeignKey(() => Category)
   @Column(DataType.INTEGER)
-  category_id?: number;
+  declare category_id?: number;
 
   // Associations
   @BelongsTo(() => Category)
-  category!: Category;
+  declare category: Category;
+
+  @HasMany(() => Thread)
+  declare threads: Thread[];
 }

@@ -4,6 +4,31 @@ import { generateToken } from '../services/auth';
 import bcrypt from 'bcrypt';
 
 /**
+ * Get current user (from JWT token)
+ */
+export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Check if user is authenticated
+    if (!req.user) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+    
+    const user = await userService.getUserById(req.user.userId, true);
+    
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+/**
  * Get user by ID
  */
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
@@ -79,11 +104,11 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
  */
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { nickname, email, password, bio, role_id } = req.body;
+    const { username, email, password, date_of_birth, gender, role_id } = req.body;
     
     // Validate required fields
-    if (!nickname || !email || !password) {
-      res.status(400).json({ error: 'Nickname, email, and password are required' });
+    if (!username || !email || !password) {
+      res.status(400).json({ error: 'Username, email, and password are required' });
       return;
     }
     
@@ -93,24 +118,24 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     
     // Create user
     const newUser = await userService.createUser({
-      nickname,
+      username,
       email,
       password_hash,
-      bio,
+      date_of_birth,
+      gender,
       role_id,
     });
     
     // Generate JWT token
     const token = generateToken({
       userId: newUser.user_id,
-      nickname: newUser.nickname,
+      username: newUser.username,
       email: newUser.email,
       roleId: newUser.role_id,
     });
     
     res.status(201).json({
-      user: newUser,
-      token,
+      message: 'User created successfully',
     });
   } catch (error) {
     console.error('Error creating user:', error);
@@ -222,20 +247,26 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     
-    // Generate JWT token
-    const token = generateToken({
+    // Generate JWT access token
+    const accessToken = generateToken({
       userId: user.user_id,
-      nickname: user.nickname,
+      username: user.username,
       email: user.email,
       roleId: user.role_id,
     });
-    
-    // Return user info without password hash
-    const { password_hash, ...userResponse } = user;
-    
+
+    // For now we don't have a separate refresh-token implementation.
+    // Use the same token as refresh token (placeholder) and set sensible expiry metadata
+    const refreshToken = accessToken;
+    const accessTokenExpiresIn = 60 * 60 * 24; // 24 hours in seconds
+    const refreshTokenExpiresIn = 60 * 60 * 24 * 7; // 7 days in seconds
+
     res.json({
-      user: userResponse,
-      token,
+      access_token: accessToken,
+      access_token_type: 'Bearer',
+      refresh_token: refreshToken,
+      access_token_expires_in: accessTokenExpiresIn,
+      refresh_token_expires_in: refreshTokenExpiresIn,
     });
   } catch (error) {
     console.error('Error during login:', error);
@@ -244,6 +275,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 export default {
+  getCurrentUser,
   getUserById,
   getUserByNickname,
   getAllUsers,

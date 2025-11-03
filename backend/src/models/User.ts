@@ -11,45 +11,51 @@ export class User extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  user_id!: number;
+  declare user_id: number;
 
   @Column({
     type: DataType.STRING(50),
     allowNull: false,
     unique: true,
   })
-  nickname!: string;
+  declare username: string;
 
   @Column({
     type: DataType.STRING(100),
     allowNull: false,
     unique: true,
   })
-  email!: string;
+  declare email: string;
 
   @Column({
     type: DataType.STRING(255),
     allowNull: false,
   })
-  password_hash!: string;
+  declare password_hash: string;
 
   @Column({
-    type: DataType.TEXT,
+    type: DataType.DATE,
     allowNull: true,
   })
-  bio?: string;
+  declare date_of_birth?: Date;
+
+  @Column({
+    type: DataType.STRING(20),
+    allowNull: true,
+  })
+  declare gender?: string;
 
   @ForeignKey(() => Role)
   @Column(DataType.INTEGER)
-  role_id?: number;
+  declare role_id?: number;
 
   // Associations
   @BelongsTo(() => Role)
-  role!: Role;
+  declare role: Role;
 
   @HasMany(() => Thread)
-  threads!: Thread[];
+  declare threads: Thread[];
 
   @HasMany(() => Comment)
-  comments!: Comment[];
+  declare comments: Comment[];
 }
