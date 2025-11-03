@@ -6,13 +6,14 @@ import { Category } from '../models/Category';
 import { Forum } from '../models/Forum';
 import { Thread } from '../models/Thread';
 import { Comment } from '../models/Comment';
+import logger from './logger';
 
 // Database configuration
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: path.resolve(__dirname, '../../db/database.db'),
   models: [Role, User, Category, Forum, Thread, Comment],
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
+  logging: process.env.NODE_ENV === 'development' ? logger.log : false,
   define: {
     timestamps: true,
     underscored: true,
@@ -25,13 +26,13 @@ export const sequelize = new Sequelize({
 export const connectDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    console.log('✅ Database connection established successfully.');
+    logger.info(`Database connection established successfully.`);
     
     // Sync models with database - force recreation for clean start
     await sequelize.sync({ force: true });
-    console.log('✅ Database models synchronized.');
+    logger.info(`Database models synchronized.`);
   } catch (error) {
-    console.error('❌ Unable to connect to the database:', error);
+    logger.error('Unable to connect to the database:', error);
     process.exit(1);
   }
 };

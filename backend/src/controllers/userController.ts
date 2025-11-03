@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as userService from '../services/user';
 import { generateToken } from '../services/auth';
 import bcrypt from 'bcrypt';
+import logger from '../config/logger';
 
 /**
  * Get current user (from JWT token)
@@ -23,7 +24,7 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
     
     res.json(user);
   } catch (error) {
-    console.error('Error getting current user:', error);
+    logger.error('Error getting current user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -49,7 +50,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     
     res.json(user);
   } catch (error) {
-    console.error('Error getting user by ID:', error);
+    logger.error('Error getting user by ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -70,7 +71,7 @@ export const getUserByNickname = async (req: Request, res: Response): Promise<vo
     
     res.json(user);
   } catch (error) {
-    console.error('Error getting user by nickname:', error);
+    logger.error('Error getting user by nickname:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -94,7 +95,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       },
     });
   } catch (error) {
-    console.error('Error getting all users:', error);
+    logger.error('Error getting all users:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -138,7 +139,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       message: 'User created successfully',
     });
   } catch (error) {
-    console.error('Error creating user:', error);
+    logger.error('Error creating user:', error);
     
     if (error instanceof Error && error.message.includes('UNIQUE constraint failed')) {
       res.status(409).json({ error: 'User with this email or nickname already exists' });
@@ -182,7 +183,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     
     res.json(updatedUser);
   } catch (error) {
-    console.error('Error updating user:', error);
+    logger.error('Error updating user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -214,7 +215,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting user:', error);
+    logger.error('Error deleting user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -262,6 +263,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     const refreshTokenExpiresIn = 60 * 60 * 24 * 7; // 7 days in seconds
 
     res.json({
+      role: user.role.name,
       access_token: accessToken,
       access_token_type: 'Bearer',
       refresh_token: refreshToken,
@@ -269,7 +271,28 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       refresh_token_expires_in: refreshTokenExpiresIn,
     });
   } catch (error) {
-    console.error('Error during login:', error);
+    logger.error('Error during login:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+/**
+ * Logout user
+ * Note: Since we're using stateless JWT tokens, the actual logout happens on the client side
+ * by removing the token. This endpoint confirms the logout action.
+ */
+export const logoutUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // In a stateless JWT system, we don't need to do anything on the server side
+    // The client will remove the token from storage
+    // If we had a token blacklist or database-tracked sessions, we'd invalidate them here
+    
+    res.json({ 
+      message: 'Logged out successfully',
+      success: true 
+    });
+  } catch (error) {
+    logger.error('Error during logout:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -283,4 +306,5 @@ export default {
   updateUser,
   deleteUser,
   loginUser,
+  logoutUser,
 };

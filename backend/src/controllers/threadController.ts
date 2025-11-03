@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import * as threadService from '../services/thread';
+import logger from '../config/logger';
+
 
 /**
  * Get all threads ordered by newest first
@@ -34,7 +36,7 @@ export const getAllThreads = async (req: Request, res: Response): Promise<void> 
       filter: forumId ? { forum_id: forumId } : null,
     });
   } catch (error) {
-    console.error('Error getting all threads:', error);
+    logger.error('Error getting all threads:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -61,7 +63,7 @@ export const getThreadById = async (req: Request, res: Response): Promise<void> 
 
     res.json(thread);
   } catch (error) {
-    console.error('Error getting thread by ID:', error);
+    logger.error('Error getting thread by ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -98,7 +100,7 @@ export const getThreadsByForumId = async (req: Request, res: Response): Promise<
       forum_id: forumId,
     });
   } catch (error) {
-    console.error('Error getting threads by forum ID:', error);
+    logger.error('Error getting threads by forum ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -135,7 +137,7 @@ export const getThreadsByUserId = async (req: Request, res: Response): Promise<v
       user_id: userId,
     });
   } catch (error) {
-    console.error('Error getting threads by user ID:', error);
+    logger.error('Error getting threads by user ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -180,7 +182,7 @@ export const createThread = async (req: Request, res: Response): Promise<void> =
 
     res.status(201).json(newThread);
   } catch (error) {
-    console.error('Error creating thread:', error);
+    logger.error('Error creating thread:', error);
 
     if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
       res.status(400).json({ error: 'Invalid forum ID' });
@@ -249,7 +251,7 @@ export const updateThread = async (req: Request, res: Response): Promise<void> =
 
     res.json(updatedThread);
   } catch (error) {
-    console.error('Error updating thread:', error);
+    logger.error('Error updating thread:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -294,7 +296,7 @@ export const deleteThread = async (req: Request, res: Response): Promise<void> =
 
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting thread:', error);
+    logger.error('Error deleting thread:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };

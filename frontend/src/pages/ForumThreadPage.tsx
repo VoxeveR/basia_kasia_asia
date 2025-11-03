@@ -81,59 +81,59 @@ function ForumThreadPage() {
                     <Button variant="outline" onClick={() => window.history.back()} className="mb-4">
                         ← Back to Forums
                     </Button>
-                    <h1 className="text-3xl font-bold mb-2">Forum Category {id}</h1>
-                    <p className="text-gray-600">Browse and discuss threads in this category</p>
-                </div>
-
-                {/* Create New Thread Button */}
-                <div className="mb-4 flex justify-end">
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button>
-                                + Create New Thread
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Create New Thread</DialogTitle>
-                                <DialogDescription>
-                                    Start a new discussion in this forum category
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="title">Thread Title</Label>
-                                    <Input
-                                        id="title"
-                                        placeholder="Enter thread title..."
-                                        value={threadTitle}
-                                        onChange={(e) => setThreadTitle(e.target.value)}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="description">Description (Optional)</Label>
-                                    <Textarea
-                                        id="description"
-                                        placeholder="Enter thread description..."
-                                        className="min-h-[100px] resize-none"
-                                        value={threadDescription}
-                                        onChange={(e) => setThreadDescription(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => setIsDialogOpen(false)}
-                                >
-                                    Cancel
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h1 className="text-3xl font-bold mb-2">Forum Category {id}</h1>
+                            <p className="text-gray-600">Browse and discuss threads in this category</p>
+                        </div>
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button>
+                                    + Create New Thread
                                 </Button>
-                                <Button onClick={handleCreateThread}>
-                                    Create Thread
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Create New Thread</DialogTitle>
+                                    <DialogDescription>
+                                        Start a new discussion in this forum category
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Thread Title</Label>
+                                        <Input
+                                            id="title"
+                                            placeholder="Enter thread title..."
+                                            value={threadTitle}
+                                            onChange={(e) => setThreadTitle(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="description">Description (Optional)</Label>
+                                        <Textarea
+                                            id="description"
+                                            placeholder="Enter thread description..."
+                                            className="min-h-[100px] resize-none"
+                                            value={threadDescription}
+                                            onChange={(e) => setThreadDescription(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => setIsDialogOpen(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button onClick={handleCreateThread}>
+                                        Create Thread
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
 
                 {/* Threads Table */}

@@ -16,7 +16,7 @@ import { Link } from "react-router";
 
 function Footer() {
     return (
-        <div className="border-black border-solid border-t flex items-center justify-between p-4">
+        <div className="border-black border-solid border-t flex items-center justify-between px-2 pt-2 pb-0 m-0">
             <img src={Logo} alt="Logo" className="h-20" />
             <div className="flex gap-4">
                 <Link to="https://www.facebook.com/samorzad.pk" target="_blank"><Facebook className="h-6 w-6 text-blue-600" /></Link>

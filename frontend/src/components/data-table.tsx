@@ -18,6 +18,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { RegisterCard } from "@/components/registerCard";
+import { toast } from "sonner";
+import { register } from "../services/auth";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -47,9 +51,35 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleRegisterAdmin = async (data: {
+    name: string;
+    email: string;
+    password: string;
+    repeatPassword: string;
+    gender: string;
+    date: Date | undefined;
+  }) => {
+    try {
+    if (!data.email || !data.password) {
+      toast.warning("Email and password are required");
+      return;
+    }
+
+    if (data.password !== data.repeatPassword) {
+      toast.warning("Passwords do not match");
+      return;
+    }
+
+    await register(data.email, data.password, data.name, data.date, data.gender, 3);
+    toast.success("Admin registered successfully!");
+    } catch (error) {
+      toast.error(`Registration error: ${error}`);
+    }
+  }
+
   return (
-    <div className="overflow-hidden rounded-md border">
-      <div className="flex items-center py-4">
+    <div className="rounded-md border px-2 bg-white">
+      <div className="flex items-center py-4 px-2">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -58,8 +88,28 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="ml-auto">Add New Admin</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col gap-4">
+            <DialogHeader>
+              <DialogTitle>Add New Admin</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to add a new admin.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 pr-2">
+              <RegisterCard
+                onRegister={handleRegisterAdmin}
+                buttonText="Create Admin"
+                hideCard={true}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
-      <div className="overflow-hidden rounded-md border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

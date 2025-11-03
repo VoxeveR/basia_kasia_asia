@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import * as commentService from '../services/comment';
+import logger from '../config/logger';
+
 
 /**
  * Get comments for a thread
@@ -42,7 +44,7 @@ export const getCommentsByThreadId = async (req: Request, res: Response): Promis
       stats,
     });
   } catch (error) {
-    console.error('Error getting comments by thread ID:', error);
+    logger.error('Error getting comments by thread ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -69,7 +71,7 @@ export const getCommentById = async (req: Request, res: Response): Promise<void>
 
     res.json(comment);
   } catch (error) {
-    console.error('Error getting comment by ID:', error);
+    logger.error('Error getting comment by ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -101,7 +103,7 @@ export const getRepliesForComment = async (req: Request, res: Response): Promise
       count: replies.length,
     });
   } catch (error) {
-    console.error('Error getting replies for comment:', error);
+    logger.error('Error getting replies for comment:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -138,7 +140,7 @@ export const getCommentsByUserId = async (req: Request, res: Response): Promise<
       user_id: userId,
     });
   } catch (error) {
-    console.error('Error getting comments by user ID:', error);
+    logger.error('Error getting comments by user ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -177,7 +179,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
 
     res.status(201).json(newComment);
   } catch (error) {
-    console.error('Error creating comment:', error);
+    logger.error('Error creating comment:', error);
 
     if (error instanceof Error) {
       if (error.message.includes('FOREIGN KEY constraint failed')) {
@@ -254,7 +256,7 @@ export const updateComment = async (req: Request, res: Response): Promise<void> 
 
     res.json(updatedComment);
   } catch (error) {
-    console.error('Error updating comment:', error);
+    logger.error('Error updating comment:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -299,7 +301,7 @@ export const deleteComment = async (req: Request, res: Response): Promise<void> 
 
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting comment:', error);
+    logger.error('Error deleting comment:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -323,7 +325,7 @@ export const getCommentStats = async (req: Request, res: Response): Promise<void
       ...stats,
     });
   } catch (error) {
-    console.error('Error getting comment stats:', error);
+    logger.error('Error getting comment stats:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
