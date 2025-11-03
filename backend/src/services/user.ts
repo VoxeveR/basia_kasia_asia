@@ -1,5 +1,6 @@
 import { User } from '../models/User';
 import { Role } from '../models/Role';
+import logger from '../config/logger';
 
 export interface UserResponse {
   user_id: number;
@@ -31,10 +32,10 @@ export const ensureDefaultRoles = async (): Promise<void> => {
         { name: 'moderator' },
         { name: 'admin' }
       ]);
-      console.log('Default roles created');
+      logger.info('Default roles created');
     }
   } catch (error) {
-    console.error('Error ensuring default roles:', error);
+    logger.error('Error ensuring default roles:', error);
   }
 };
 
@@ -46,7 +47,7 @@ export const getDefaultUserRoleId = async (): Promise<number | null> => {
     const userRole = await Role.findOne({ where: { name: 'user' } });
     return userRole ? userRole.role_id : null;
   } catch (error) {
-    console.error('Error getting default user role:', error);
+    logger.error('Error getting default user role:', error);
     return null;
   }
 };
@@ -116,6 +117,7 @@ export const getUserByEmail = async (
       attributes: includePasswordHash 
         ? undefined 
         : { exclude: ['password_hash'] },
+      include: [{ model: Role, as: 'role' }],
     });
     
     if (!user) return null;
@@ -173,7 +175,7 @@ export const createUser = async (userData: {
     if (userData.role_id) {
       const roleExists = await Role.findByPk(userData.role_id);
       if (!roleExists) {
-        console.warn(`Role ID ${userData.role_id} does not exist, using default user role`);
+        logger.warn(`Role ID ${userData.role_id} does not exist, using default user role`);
         const defaultRoleId = await getDefaultUserRoleId();
         validatedRoleId = defaultRoleId || undefined;
       }

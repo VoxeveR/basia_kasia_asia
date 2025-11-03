@@ -63,10 +63,12 @@ function AdminPanelPage() {
         },
     ]
     return (
-        <div className='w-full h-full flex flex-col gap-4 p-4'> 
+        <div className='w-full min-h-screen flex flex-col gap-4 p-4 bg-gray-50'> 
             <Menu />
             
-            <DataTable columns={columns} data={data} />
+            <div className="flex-1">
+                <DataTable columns={columns} data={data} />
+            </div>
 
             <Footer  />
         </div>

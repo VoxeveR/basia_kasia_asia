@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import * as forumService from '../services/forum';
+import logger from '../config/logger';
 
 /**
  * Get all forums
@@ -34,7 +35,7 @@ export const getAllForums = async (req: Request, res: Response): Promise<void> =
       filter: categoryId ? { category_id: categoryId } : null,
     });
   } catch (error) {
-    console.error('Error getting all forums:', error);
+    logger.error('Error getting all forums:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -61,7 +62,7 @@ export const getForumById = async (req: Request, res: Response): Promise<void> =
 
     res.json(forum);
   } catch (error) {
-    console.error('Error getting forum by ID:', error);
+    logger.error('Error getting forum by ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -98,7 +99,7 @@ export const getForumsByCategoryId = async (req: Request, res: Response): Promis
       category_id: categoryId,
     });
   } catch (error) {
-    console.error('Error getting forums by category ID:', error);
+    logger.error('Error getting forums by category ID:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -148,7 +149,7 @@ export const createForum = async (req: Request, res: Response): Promise<void> =>
 
     res.status(201).json(newForum);
   } catch (error) {
-    console.error('Error creating forum:', error);
+    logger.error('Error creating forum:', error);
 
     if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
       res.status(400).json({ error: 'Invalid category ID' });
@@ -210,7 +211,7 @@ export const updateForum = async (req: Request, res: Response): Promise<void> =>
 
     res.json(updatedForum);
   } catch (error) {
-    console.error('Error updating forum:', error);
+    logger.error('Error updating forum:', error);
 
     if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
       res.status(400).json({ error: 'Invalid category ID' });
@@ -261,7 +262,7 @@ export const deleteForum = async (req: Request, res: Response): Promise<void> =>
 
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting forum:', error);
+    logger.error('Error deleting forum:', error);
     
     if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
       res.status(400).json({ 
