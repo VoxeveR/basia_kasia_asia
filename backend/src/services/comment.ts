@@ -13,7 +13,7 @@ export interface CommentResponse {
   updated_at?: string;
   user?: {
     user_id: number;
-    nickname: string;
+    username: string;
     email: string;
     bio?: string | null;
   };
@@ -49,7 +49,7 @@ export const getCommentsByThreadId = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
       ],
     });
@@ -98,7 +98,7 @@ export const getRepliesForComment = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
       ],
     });
@@ -145,7 +145,7 @@ export const getCommentById = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
       ],
     });
@@ -194,7 +194,7 @@ export const getCommentsByUserId = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
         {
           model: Thread,

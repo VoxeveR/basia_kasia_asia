@@ -61,7 +61,16 @@ export const getThreadById = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    res.json(thread);
+    // Transform thread to the desired format
+    const formattedThread = {
+      id: thread.thread_id,
+      title: thread.title,
+      description: thread.description || '',
+      author: thread.user?.username || 'Unknown',
+      date: thread.created_at ? new Date(thread.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    };
+
+    res.json(formattedThread);
   } catch (error) {
     logger.error('Error getting thread by ID:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -89,16 +98,16 @@ export const getThreadsByForumId = async (req: Request, res: Response): Promise<
 
     const threads = await threadService.getThreadsByForumId(forumId, limit, offset);
 
-    res.json({
-      threads,
-      pagination: {
-        limit,
-        offset,
-        count: threads.length,
-        has_more: threads.length === limit,
-      },
-      forum_id: forumId,
-    });
+    // Transform threads to the desired format
+    const formattedThreads = threads.map(thread => ({
+      id: String(thread.thread_id),
+      title: thread.title,
+      author: thread.user?.username || 'Unknown',
+      date: thread.created_at ? new Date(thread.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      replies: thread.comments_count || 0,
+    }));
+
+    res.json(formattedThreads);
   } catch (error) {
     logger.error('Error getting threads by forum ID:', error);
     res.status(500).json({ error: 'Internal server error' });

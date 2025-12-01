@@ -7,14 +7,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Link } from "react-router-dom"
-
-const forumTopics = [
-    { id: "1", title: "First Topic", author: "Alice", date: "2023-01-01" },
-    { id: "2", title: "Second Topic", author: "Bob", date: "2023-01-02" },
-    { id: "3", title: "Third Topic", author: "Charlie", date: "2023-01-03" },
-];
+import { getForums } from "@/services/forums";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 function Forum(){
+    const [forums, setForums] = useState<Array<{id: string; title: string; creator: string; created_at: string;}>>([]);
+
+    const handleFetchForums = async () => {
+        try {
+        const data = await getForums();
+            setForums(data);
+        } catch (error) {
+            toast.error(`Error fetching forums: ${error}`);
+        }
+    };
+
+    useEffect(() => {
+        handleFetchForums();
+    }, []);
+
     return (
         <div>
             <Table className="w-9/10 mx-auto">
@@ -26,18 +38,18 @@ function Forum(){
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {forumTopics.map((topic) => (
-                        <TableRow key={topic.id} className="hover:bg-gray-50 cursor-pointer">
+                    {forums.map((forum) => (
+                        <TableRow key={forum.id} className="hover:bg-gray-50 cursor-pointer">
                             <TableCell>
-                                <Link 
-                                    to={`/forum/${topic.id}`}
+                                <Link
+                                    to={`/forum/${forum.id}`}
                                     className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                                 >
-                                    {topic.title}
+                                    {forum.title}
                                 </Link>
                             </TableCell>
-                            <TableCell>{topic.author}</TableCell>
-                            <TableCell>{topic.date}</TableCell>
+                            <TableCell>{forum.creator}</TableCell>
+                            <TableCell>{new Date(forum.created_at).toLocaleDateString()}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

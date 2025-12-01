@@ -23,17 +23,20 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { createForum } from "@/services/forums";
 
 interface ForumDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   isAdmin?: boolean;
+  onForumCreated?: () => void;
 }
 
 export function ForumDataTable<TData, TValue>({
   columns,
   data,
   isAdmin = false,
+  onForumCreated,
 }: ForumDataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -66,16 +69,20 @@ export function ForumDataTable<TData, TValue>({
 
       // Here you would call the API to create a new forum
       console.log("Creating forum:", { title: forumTitle, description: forumDescription });
-      
-      // TODO: Call API to create forum
-      // await createForum({ title: forumTitle, description: forumDescription });
-      
+
+      await createForum(forumTitle, forumDescription);
+
       toast.success("Forum created successfully!");
       
       // Reset form and close dialog
       setForumTitle("");
       setForumDescription("");
       setIsDialogOpen(false);
+      
+      // Trigger refresh
+      if (onForumCreated) {
+        onForumCreated();
+      }
     } catch (error) {
       toast.error(`Error creating forum: ${error}`);
     }

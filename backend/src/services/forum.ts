@@ -1,5 +1,4 @@
 import { Forum } from '../models/Forum';
-import { Category } from '../models/Category';
 import { Thread } from '../models/Thread';
 import { User } from '../models/User';
 
@@ -15,6 +14,10 @@ export interface ForumResponse {
     name: string;
     description?: string | null;
   };
+  creator?: {
+    user_id: number;
+    username: string;
+  };
   threads_count?: number;
   latest_thread?: {
     thread_id: number;
@@ -22,7 +25,7 @@ export interface ForumResponse {
     created_at?: string;
     user?: {
       user_id: number;
-      nickname: string;
+      username: string;
     };
   };
 }
@@ -49,9 +52,9 @@ export const getAllForums = async (
       order: [['created_at', 'DESC']],
       include: [
         {
-          model: Category,
-          as: 'category',
-          attributes: ['category_id', 'name', 'description'],
+          model: User,
+          as: 'creator',
+          attributes: ['user_id', 'username'],
         },
       ],
     });
@@ -72,7 +75,7 @@ export const getAllForums = async (
             {
               model: User,
               as: 'user',
-              attributes: ['user_id', 'nickname'],
+              attributes: ['user_id', 'username'],
             },
           ],
           attributes: ['thread_id', 'title', 'created_at'],
@@ -103,34 +106,8 @@ export const getForumById = async (
   includeThreads: boolean = false
 ): Promise<ForumResponse | null> => {
   try {
-    const includeOptions = [
-      {
-        model: Category,
-        as: 'category',
-        attributes: ['category_id', 'name', 'description'],
-      },
-    ];
 
-    if (includeThreads) {
-      includeOptions.push({
-        model: Thread,
-        as: 'threads',
-        limit: 10,
-        order: [['created_at', 'DESC']],
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['user_id', 'nickname'],
-          },
-        ],
-        attributes: ['thread_id', 'title', 'description', 'created_at'],
-      } as any);
-    }
-
-    const forum = await Forum.findByPk(forumId, {
-      include: includeOptions,
-    });
+    const forum = await Forum.findByPk(forumId);
 
     if (!forum) return null;
 
@@ -149,7 +126,7 @@ export const getForumById = async (
           {
             model: User,
             as: 'user',
-            attributes: ['user_id', 'nickname'],
+            attributes: ['user_id', 'username'],
           },
         ],
         attributes: ['thread_id', 'title', 'created_at'],
@@ -190,7 +167,7 @@ export const getForumsByCategoryId = async (
 export const createForum = async (forumData: {
   title: string;
   description?: string;
-  category_id: number;
+  created_by: number;
 }): Promise<ForumResponse> => {
   try {
     const forum = await Forum.create(forumData);

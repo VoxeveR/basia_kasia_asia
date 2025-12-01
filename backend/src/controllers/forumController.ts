@@ -24,16 +24,16 @@ export const getAllForums = async (req: Request, res: Response): Promise<void> =
 
     const forums = await forumService.getAllForums(limit, offset, categoryId);
 
-    res.json({
-      forums,
-      pagination: {
-        limit,
-        offset,
-        count: forums.length,
-        has_more: forums.length === limit,
-      },
-      filter: categoryId ? { category_id: categoryId } : null,
-    });
+    // Transform forums to the desired format
+    const formattedForums = forums.map(forum => ({
+      id: String(forum.forum_id),
+      title: forum.title,
+      description: forum.description || '',
+      creator: forum.creator?.username || 'Unknown',
+      created_at: forum.created_at || new Date().toISOString(),
+    }));
+
+    res.json(formattedForums);
   } catch (error) {
     logger.error('Error getting all forums:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -109,11 +109,11 @@ export const getForumsByCategoryId = async (req: Request, res: Response): Promis
  */
 export const createForum = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, description, category_id } = req.body;
+    const { title, description } = req.body;
 
     // Validate required fields
-    if (!title || !category_id) {
-      res.status(400).json({ error: 'Title and category_id are required' });
+    if (!title) {
+      res.status(400).json({ error: 'Title is required' });
       return;
     }
 
@@ -135,8 +135,8 @@ export const createForum = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    // Check if user is admin (role_id = 1)
-    if (req.user.roleId !== 1) {
+    // Check if user is admin (role_id = 3)
+    if (req.user.roleId !== 3) {
       res.status(403).json({ error: 'Only administrators can create forums' });
       return;
     }
@@ -144,7 +144,7 @@ export const createForum = async (req: Request, res: Response): Promise<void> =>
     const newForum = await forumService.createForum({
       title: title.trim(),
       description: description?.trim(),
-      category_id: parseInt(category_id),
+      created_by: req.user.userId,
     });
 
     res.status(201).json(newForum);
