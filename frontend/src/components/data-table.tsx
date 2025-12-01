@@ -26,11 +26,13 @@ import { register } from "../services/auth";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onUserUpdated?: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onUserUpdated,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 

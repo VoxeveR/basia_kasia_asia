@@ -1,5 +1,4 @@
 import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, ForeignKey, BelongsTo, HasMany } from 'sequelize-typescript';
-import { Category } from './Category';
 import { Thread } from './Thread';
 import { User } from './User';
 
@@ -25,10 +24,6 @@ export class Forum extends Model {
   })
   declare description?: string;
 
-  @ForeignKey(() => Category)
-  @Column(DataType.INTEGER)
-  declare category_id?: number;
-
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
@@ -44,10 +39,6 @@ export class Forum extends Model {
     field: 'created_at'
   })
   declare created_at: Date;
-
-  // Associations
-  @BelongsTo(() => Category)
-  declare category: Category;
 
   @BelongsTo(() => User, 'created_by')
   declare creator: User;

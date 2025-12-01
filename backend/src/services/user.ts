@@ -9,6 +9,7 @@ export interface UserResponse {
   date_of_birth?: Date | null;
   gender?: string | null;
   role_id?: number | null;
+  is_banned?: boolean;
   created_at?: string;
   updated_at?: string;
   role?: {
@@ -166,7 +167,6 @@ export const getUserByEmail = async (
     });
     
     if (!user) return null;
-    
     return user.toJSON();
   } catch (error) {
     throw new Error(`Failed to get user by email: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -285,14 +285,52 @@ export const deleteUser = async (userId: number): Promise<boolean> => {
     const deletedCount = await User.destroy({
       where: { user_id: userId },
     });
-    
+
     return deletedCount > 0;
   } catch (error) {
     throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 };
 
-export default {
+/**
+ * Ban a user
+ * @param userId user ID
+ * @returns Promise resolving to updated User or null if not found
+ */
+export const banUser = async (userId: number): Promise<UserResponse | null> => {
+  try {
+    const [affectedCount] = await User.update(
+      { is_banned: true },
+      { where: { user_id: userId } }
+    );
+
+    if (affectedCount === 0) return null;
+
+    return getUserById(userId, true);
+  } catch (error) {
+    throw new Error(`Failed to ban user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};
+
+/**
+ * Unban a user
+ * @param userId user ID
+ * @returns Promise resolving to updated User or null if not found
+ */
+export const unbanUser = async (userId: number): Promise<UserResponse | null> => {
+  try {
+    const [affectedCount] = await User.update(
+      { is_banned: false },
+      { where: { user_id: userId } }
+    );
+
+    if (affectedCount === 0) return null;
+
+    return getUserById(userId, true);
+  } catch (error) {
+    throw new Error(`Failed to unban user: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+};export default {
   getUserById,
   getUserByNickname,
   getUserByEmail,

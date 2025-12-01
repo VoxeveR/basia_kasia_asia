@@ -2,7 +2,6 @@ import { Sequelize } from 'sequelize-typescript';
 import path from 'path';
 import { Role } from '../models/Role';
 import { User } from '../models/User';
-import { Category } from '../models/Category';
 import { Forum } from '../models/Forum';
 import { Thread } from '../models/Thread';
 import { Comment } from '../models/Comment';
@@ -12,7 +11,7 @@ import logger from './logger';
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: path.resolve(__dirname, '../../db/database.db'),
-  models: [Role, User, Category, Forum, Thread, Comment],
+  models: [Role, User, Forum, Thread, Comment],
   logging: process.env.NODE_ENV === 'development' ? logger.log : false,
   define: {
     timestamps: true,

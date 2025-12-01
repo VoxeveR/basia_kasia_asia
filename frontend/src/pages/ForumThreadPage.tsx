@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Menu from "@/components/Menu";
 import Footer from "@/components/Foooter";
 import { Button } from "@/components/ui/button";
@@ -24,51 +24,56 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
+import { getThreadsByForumId } from '@/services/forums';
+import { createThread } from '@/services/threads';
 
 function ForumThreadPage() {
     const { id } = useParams<{ id: string }>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [threadTitle, setThreadTitle] = useState("");
     const [threadDescription, setThreadDescription] = useState("");
+    const navigate = useNavigate();
 
     // Mock data for threads in this forum
-    const [forumThreads, setForumThreads] = useState([
-        { id: "1", title: "How to get started with React?", author: "Alice", date: "2024-01-01", replies: 5 },
-        { id: "2", title: "Best practices for TypeScript", author: "Bob", date: "2024-01-02", replies: 12 },
-        { id: "3", title: "Understanding React Hooks", author: "Charlie", date: "2024-01-03", replies: 8 },
-        { id: "4", title: "State management solutions", author: "Diana", date: "2024-01-04", replies: 15 },
-        { id: "5", title: "Performance optimization tips", author: "Eve", date: "2024-01-05", replies: 3 },
-    ]);
+    const [forumThreads, setForumThreads] = useState<Array<{id: string; title: string; author: string; date: string; replies: number;}>>([]);
 
-    const handleCreateThread = () => {
-        if (!threadTitle.trim()) {
-            toast.warning("Please enter a thread title");
-            return;
+    const handleGetThreads = useCallback(async () => {
+        try{
+            const threads = await getThreadsByForumId(Number(id));
+            setForumThreads(threads);
+        } catch (error) {
+            toast.error(`Error fetching threads: ${error}`);
         }
+    }, [id]);
 
-        // Create new thread object
-        const newThread = {
-            id: String(forumThreads.length + 1),
-            title: threadTitle,
-            author: "CurrentUser", // In a real app, get from auth context
-            date: new Date().toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            }).replace(/\//g, '-'),
-            replies: 0,
-        };
 
-        // Add thread to the list
-        setForumThreads([newThread, ...forumThreads]);
+    useEffect(() => {
+        handleGetThreads();
+    }, [handleGetThreads]);
 
-        // Clear form and close dialog
-        setThreadTitle("");
-        setThreadDescription("");
-        setIsDialogOpen(false);
+    const handleCreateThread = async () => {
+        try{
+            if (!threadTitle.trim()) {
+                toast.warning("Please enter a thread title");
+                return;
+            }
 
-        // Show success message
-        toast.success("Thread created successfully!");
+            // Create new thread object
+
+            await createThread(Number(id), threadTitle, threadDescription);
+
+            await handleGetThreads();
+            // Clear form and close dialog
+            setThreadTitle("");
+            setThreadDescription("");
+            setIsDialogOpen(false);
+
+            // Show success message
+            toast.success("Thread created successfully!");
+        } catch (error) {
+            toast.error(`Error creating thread: ${error}`);
+        }
     };
 
     return (
@@ -78,7 +83,7 @@ function ForumThreadPage() {
             <div className="container mx-auto max-w-6xl flex-1">
                 {/* Forum Header */}
                 <div className="mb-6">
-                    <Button variant="outline" onClick={() => window.history.back()} className="mb-4">
+                    <Button variant="outline" onClick={() => navigate("/forum")} className="mb-4">
                         ← Back to Forums
                     </Button>
                     <div className="flex justify-between items-start">

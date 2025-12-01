@@ -45,6 +45,19 @@ export class User extends Model {
   })
   declare gender?: string;
 
+  @Column({
+    type: DataType.TEXT,
+    allowNull: true,
+  })
+  declare bio?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  declare is_banned: boolean;
+
   @ForeignKey(() => Role)
   @Column(DataType.INTEGER)
   declare role_id?: number;

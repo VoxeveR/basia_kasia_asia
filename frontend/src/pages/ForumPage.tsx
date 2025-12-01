@@ -10,27 +10,35 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { createForum } from "@/services/forums";
 
 function ForumPage() {
     const auth = useAuth();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [forumTitle, setForumTitle] = useState("");
     const [forumDescription, setForumDescription] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const handleCreateForum = () => {
+
+    const handleCreateForum =  async () => {
         if (!forumTitle.trim()) {
             toast.warning("Forum title is required");
             return;
         }
 
-        // Here you would call the API to create a new forum
-        console.log("Creating forum:", { title: forumTitle, description: forumDescription });
-        toast.success("Forum created successfully!");
-        
-        // Reset form and close dialog
-        setForumTitle("");
-        setForumDescription("");
-        setIsDialogOpen(false);
+        try {
+            await createForum(forumTitle, forumDescription);
+            toast.success("Forum created successfully!");
+            
+            setForumTitle("");
+            setForumDescription("");
+            setIsDialogOpen(false);
+            
+            // Trigger refresh of forums list
+            setRefreshKey(prev => prev + 1);
+        } catch (error) {
+            toast.error("Failed to create forum");
+        }
     };
 
     return (
@@ -93,7 +101,7 @@ function ForumPage() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <Forum />
+                        <Forum key={refreshKey} />
                     </CardContent>
                 </Card>
             </div>

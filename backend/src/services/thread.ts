@@ -1,7 +1,6 @@
 import { Thread } from '../models/Thread';
 import { User } from '../models/User';
 import { Forum } from '../models/Forum';
-import { Category } from '../models/Category';
 import { Comment } from '../models/Comment';
 
 export interface ThreadResponse {
@@ -14,7 +13,7 @@ export interface ThreadResponse {
   updated_at?: string;
   user?: {
     user_id: number;
-    nickname: string;
+    username: string;
     email: string;
     bio?: string | null;
   };
@@ -55,19 +54,12 @@ export const getAllThreads = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
         {
           model: Forum,
           as: 'forum',
           attributes: ['forum_id', 'title', 'description'],
-          include: [
-            {
-              model: Category,
-              as: 'category',
-              attributes: ['category_id', 'name', 'description'],
-            },
-          ],
         },
       ],
     });
@@ -107,19 +99,12 @@ export const getThreadById = async (
       {
         model: User,
         as: 'user',
-        attributes: ['user_id', 'nickname', 'email', 'bio'],
+        attributes: ['user_id', 'username', 'email', 'bio'],
       },
       {
         model: Forum,
         as: 'forum',
         attributes: ['forum_id', 'title', 'description'],
-        include: [
-          {
-            model: Category,
-            as: 'category',
-            attributes: ['category_id', 'name', 'description'],
-          },
-        ],
       },
     ];
 
@@ -131,7 +116,7 @@ export const getThreadById = async (
           {
             model: User,
             as: 'user',
-            attributes: ['user_id', 'nickname', 'email'],
+            attributes: ['user_id', 'username', 'email'],
           },
         ],
         order: [['created_at', 'ASC']],
@@ -195,19 +180,12 @@ export const getThreadsByUserId = async (
         {
           model: User,
           as: 'user',
-          attributes: ['user_id', 'nickname', 'email', 'bio'],
+          attributes: ['user_id', 'username', 'email', 'bio'],
         },
         {
           model: Forum,
           as: 'forum',
           attributes: ['forum_id', 'title', 'description'],
-          include: [
-            {
-              model: Category,
-              as: 'category',
-              attributes: ['category_id', 'name', 'description'],
-            },
-          ],
         },
       ],
     });

@@ -74,7 +74,7 @@ export const requireRole = (requiredRoleId: number) => {
 /**
  * Middleware to check if user is admin (assuming role_id 1 is admin)
  */
-export const requireAdmin = requireRole(1);
+export const requireAdmin = requireRole(3);
 
 export default {
   authenticateJWT,

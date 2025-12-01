@@ -86,14 +86,18 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
     
     const users = await userService.getAllUsers(limit, offset);
     
-    res.json({
-      users,
-      pagination: {
-        limit,
-        offset,
-        count: users.length,
-      },
-    });
+    // Transform users to the desired format
+    const formattedUsers = users.map(user => ({
+      user_id: user.user_id,
+      username: user.username,
+      email: user.email,
+      date_of_birth: user.date_of_birth ? new Date(user.date_of_birth).toISOString().split('T')[0] : null,
+      gender: user.gender,
+      is_banned: user.is_banned,
+      role: user.role?.name || 'user',
+    }));
+    
+    res.json(formattedUsers);
   } catch (error) {
     logger.error('Error getting all users:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -248,6 +252,12 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     
+    // Check if user is banned
+    if (user.is_banned) {
+      res.status(403).json({ error: 'Your account has been banned. Please contact support.' });
+      return;
+    }
+    
     // Generate JWT access token
     const accessToken = generateToken({
       userId: user.user_id,
@@ -297,6 +307,70 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+/**
+ * Ban user (admin only)
+ */
+export const banUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = parseInt(req.params.id);
+    
+    if (isNaN(userId)) {
+      res.status(400).json({ error: 'Invalid user ID' });
+      return;
+    }
+    
+    // Check if user is admin
+    if (req.user && req.user.roleId !== 3) {
+      res.status(403).json({ error: 'Only administrators can ban users' });
+      return;
+    }
+    
+    const bannedUser = await userService.banUser(userId);
+    
+    if (!bannedUser) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    
+    res.json({ message: 'User banned successfully', user: bannedUser });
+  } catch (error) {
+    logger.error('Error banning user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+/**
+ * Unban user (admin only)
+ */
+export const unbanUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = parseInt(req.params.id);
+    
+    if (isNaN(userId)) {
+      res.status(400).json({ error: 'Invalid user ID' });
+      return;
+    }
+    
+    // Check if user is admin
+    if (req.user && req.user.roleId !== 3) {
+      res.status(403).json({ error: 'Only administrators can unban users' });
+      return;
+    }
+    
+    const unbannedUser = await userService.unbanUser(userId);
+    
+    if (!unbannedUser) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+    
+    res.json({ message: 'User unbanned successfully', user: unbannedUser });
+  } catch (error) {
+    logger.error('Error unbanning user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 export default {
   getCurrentUser,
   getUserById,
@@ -307,4 +381,6 @@ export default {
   deleteUser,
   loginUser,
   logoutUser,
+  banUser,
+  unbanUser,
 };

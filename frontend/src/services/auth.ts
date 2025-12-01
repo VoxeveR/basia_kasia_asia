@@ -1,5 +1,4 @@
 import axios from "axios";
-import api from "./api";
 
 export async function login(email: string, password: string) {
   try {
@@ -10,7 +9,14 @@ export async function login(email: string, password: string) {
     return response.data;
   } catch (error) {
     console.error("Login failed:", error);
-    throw error; // Re-throw the error for further handling
+    
+    // Check if it's a ban error (403)
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      throw new Error("Twoje konto zostało zablokowane. Skontaktuj się z administratorem.");
+    }
+    
+    // For other errors, throw the original error
+    throw error;
   }
 }
 
@@ -29,8 +35,8 @@ export async function register(email: string, password: string, username: string
 export async function logout() {
   const token = sessionStorage.getItem("refreshToken");
   console.log("Logging out with token:", token);
-  const response = await api.post(
-    "/auth/logout", 
+  const response = await axios.post(
+    "http://localhost:8000/api/auth/logout",
     {
       "token": JSON.parse(token || "null"),
     }

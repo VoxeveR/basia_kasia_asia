@@ -30,19 +30,17 @@ export const getCommentsByThreadId = async (req: Request, res: Response): Promis
     }
 
     const comments = await commentService.getCommentsByThreadId(threadId, limit, offset, includeReplies);
-    const stats = await commentService.getCommentStats(threadId);
 
-    res.json({
-      comments,
-      pagination: {
-        limit,
-        offset,
-        count: comments.length,
-        has_more: comments.length === limit,
-      },
-      thread_id: threadId,
-      stats,
-    });
+    // Transform comments to simplified format
+    const formattedComments = comments.map(comment => ({
+      id: comment.comment_id,
+      username: comment.user?.username || 'Unknown',
+      date: comment.created_at ? new Date(comment.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.') : '',
+      avatar: '/src/assets/img/default-user.svg',
+      content: comment.content,
+    }));
+
+    res.json(formattedComments);
   } catch (error) {
     logger.error('Error getting comments by thread ID:', error);
     res.status(500).json({ error: 'Internal server error' });
