@@ -6,6 +6,7 @@ import { Forum } from '../models/Forum';
 import { Thread } from '../models/Thread';
 import { Comment } from '../models/Comment';
 import logger from './logger';
+import { seedDatabase } from '../seed/seedData';
 
 // Database configuration
 export const sequelize = new Sequelize({
@@ -27,9 +28,16 @@ export const connectDatabase = async (): Promise<void> => {
     await sequelize.authenticate();
     logger.info(`Database connection established successfully.`);
     
-    // Sync models with database - force recreation for clean start
-    await sequelize.sync({ force: true });
+    // Sync models with database - alter will update schema without dropping data
+    await sequelize.sync({ alter: true });
     logger.info(`Database models synchronized.`);
+    
+    // Check if database is empty (after sync)
+    const roleCount = await Role.count();
+    if (roleCount === 0) {
+      await seedDatabase();
+      logger.info('Database seeded with initial data');
+    }
   } catch (error) {
     logger.error('Unable to connect to the database:', error);
     process.exit(1);
